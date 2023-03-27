@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Dashboard</title>
+    <script
+      src="https://kit.fontawesome.com/7d1dc3faa0.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Gloria+Hallelujah&family=Raleway:wght@500&family=Zeyada&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <header class="header">Weather Dashboard</header>
+    <main class="main">
+      <div class="container mx-2">
+        <div class="row w-40" style="height: 90vh">
+          <div id="searchAndHist" class="col-md-3 col-sm-10 row">
+            <form id="searchForm" class="col-md-12 col-sm-12">
+              <input
+                id="locationSearch"
+                type="search"
+                class="form-control rounded"
+                placeholder="Enter a City..."
+                aria-label="Search"
+              />
+              <button id="searchButton">
+                <i class="fa-solid fa-magnifying-glass-location"></i>
+              </button>
+            </form>
+            <div id="historyList" class="col-md-12 col-sm-12">
+              Search History
+              <hr class="rounded" />
+              <ul>
+                <li>test:cities</li>
+              </ul>
+            </div>
+          </div>
+          <div id="displayBoard" class="col-md-9">
+            <div class="todayForcastBox">
+              <div id="todayForcast">test:today's forcast</div>
+            </div>
+            <div class="fiveDaysForcastBox">
+              <h2 class="subtitle">
+                Forcast for the Next Five Days in
+                <span id="locationSearchTerm"></span>
+              </h2>
+              <div id="fiveDaysForcast">test: forcast for next 5 days</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="./assets/js/script.js"></script>
+  </body>
+</html>
