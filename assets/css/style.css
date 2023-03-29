@@ -1,18 +1,27 @@
 * {
   background-color: rgb(20, 32, 36);
+  color: #d9d9d9;
   font-family: "Raleway", sans-serif;
 }
 
+body {
+  color: #d9d9d9;
+}
+
 header {
-  background-color: rgb(20, 32, 36);
   color: white;
   font-size: xx-large;
   font-family: "Raleway", sans-serif;
-  height: 10vh;
+  height: 17vh;
   width: 100vw;
   padding-left: 2%;
   padding-bottom: 3.5%;
   border-bottom: 2px white solid;
+  text-align: center;
+}
+
+header > div {
+  font-size: large;
 }
 
 .main {
