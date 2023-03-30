@@ -19,19 +19,29 @@ let currentTime = $("<div>")
   .text(dayjs().format("HH:mm"));
 $todayEl.append(currentTime);
 //
+let histSearch = function (event) {
+  var city = $(event.target).data("city");
+  console.log("data-city", city);
+  if (city) {
+    histGetLL(city);
+    // $fiveDaysEl.text("");
+    // $todayWeatherEl.text("");
+  }
+};
 
 let storedHistory = JSON.parse(localStorage.getItem("historyValue")) || [];
-for (var i = 0; i < 15; i++) {
+storedHistory = storedHistory.slice(0, 15);
+for (var i = 0; i < storedHistory.length; i++) {
   if (storedHistory[i]) {
-    // console.log("check localStor", typeof storedHistory[i]);
-    //prevent empty boxes from being generated
+    console.log("creating button for", storedHistory[i]); //prevent empty boxes from being generated
     $("<button>")
       .attr("class", "histBtn col-md-10 col-ms-10")
       .attr("data-city", storedHistory[i])
       .text(storedHistory[i])
-      .appendTo($historyEl);
-    // console.log("ln33, button data", storedHistory[i]);
+      .prependTo($historyEl)
+      .on("click", histSearch);
   }
+  // console.log("ln33, button data", storedHistory[i]);
 }
 
 //listen to location search box and button
@@ -76,13 +86,14 @@ let getLatLon = function (location) {
         // set History from local storage
         localStorage.setItem(
           "historyValue",
-          JSON.stringify(storedHistory.slice(0, 15)) // Limits to 10 values in search history
+          JSON.stringify(storedHistory.slice(0, 15)) // Limits to 15 values in search history
         );
         $("<button>")
           .attr("class", "histBtn col-md-10 col-ms-10")
           .attr("data-city", cityData.city.name)
           .text(historyValue)
-          .prependTo($historyEl);
+          .prependTo($historyEl)
+          .on("click", histSearch);
         //
       });
     } else {
@@ -117,13 +128,14 @@ let histGetLL = function (city) {
         // set History from local storage
         localStorage.setItem(
           "historyValue",
-          JSON.stringify(storedHistory.slice(0, 15)) // Limits to 10 values in search history
+          JSON.stringify(storedHistory.slice(0, 15)) // Limits to 15 values in search history
         );
         $("<button>")
           .attr("class", "histBtn col-md-10 col-ms-10")
           .attr("data-city", cityData.city.name)
           .text(historyValue)
-          .prependTo($historyEl);
+          .prependTo($historyEl)
+          .on("click", histSearch);
       });
     }
   });
@@ -144,21 +156,23 @@ let getTodayWeather = function (lat, lon, cityName) {
         console.log("dData", dData);
         console.log("cityName", cityName);
         let $cityNameEl = $(".cityName").text(cityName);
-        let dailyCard = $("<div>").attr("class", "dailyCard col-md-8 col-sm-8");
+        let dailyCard = $("<div>")
+          .attr("class", "dailyCard col-md-7 col-sm-8")
+          .attr("style", "padding-top: 7%");
 
         let dailyIcon = $("<img>", {
           src:
             " https://openweathermap.org/img/wn/" +
             dData.weather[0].icon +
             "@2x.png",
-        }).attr("class", "col-md-3");
+        }).attr("class", "col-md-4");
 
         let dailyMxTemp = $("<div>").text(
-          "Temperature : " + dData.main.temp_max + " °F"
+          "H Temperature : " + dData.main.temp_max + " °F"
         );
 
         let dailyMnTemp = $("<div>").text(
-          "Temperature : " + dData.main.temp_min + " °F"
+          "L Temperature : " + dData.main.temp_min + " °F"
         );
 
         let dailyWind = $("<div>").text("Wind : " + dData.wind.speed + " MPH");
@@ -249,17 +263,7 @@ let getFiveDayForecast = function (lat, lon) {
   });
 };
 
-let histSearch = function (event) {
-  var city = $(event.target).attr("data-city");
-  console.log("ln255", city);
-  if (city) {
-    histGetLL(city);
-    // $fiveDaysEl.text("");
-    // $todayWeatherEl.text("");
-  }
-};
-
-$(".histBtn").click(histSearch);
+// $(".histBtn").click(histSearch);
 $searchBtn.click(locationSearch);
 $(".clearHistBtn").on("click", () => {
   localStorage.clear();
