@@ -92,3 +92,10 @@ hr.rounded {
   width: 100%;
   height: 70%;
 }
+
+.FDFcard {
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 7px;
+  margin: 1%;
+}
