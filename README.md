@@ -4,7 +4,7 @@
 
 ## Instruction
 
-- When load to the page, a search history list and a search area are located on the left hand side of the page.
+- When load to the page, a search area and a search history list are located on the left hand side of the page. Where in the search area, users can enter a city name to initiate the weather search.
 - It is users choice to start a new search or recheck the weather on the location they priorly search.
 - History list allow the users to review the locations they have search on and regenerate a new weather report with a simple click.
 - The app also use a simple image to properly reflect the local weather, which aim to help the users to get a better feel of how the weather could feel like.
@@ -20,4 +20,3 @@ The following images are some snapshots of the site.
 <img width="1436" alt="Screenshot 2023-03-30 at 12 28 25" src="https://user-images.githubusercontent.com/116051329/228950989-f4eb8241-1211-416b-ae14-a9d55b2d3aa5.png">
 
 https://user-images.githubusercontent.com/116051329/228951017-cf932c3e-a314-4406-9295-e86686acc234.mov
-
