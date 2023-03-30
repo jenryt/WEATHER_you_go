@@ -1,7 +1,8 @@
 const $locationEl = $("#locationSearch");
 const $locSearchForm = $("#locationSearch");
+const $historyEl = $("#history");
 const $todayWeatherEl = $("#todayWeather");
-const $fiveDaysEl = $("#fiveDaysForcast");
+const $fiveDaysEl = $("#fiveDaysForecast");
 const $searchBtn = $("#searchButton");
 const apiKey = "&appid=8c04b0cdc02355438550cff0dc38d66f";
 
@@ -19,6 +20,20 @@ let currentTime = $("<div>")
 $todayEl.append(currentTime);
 //
 
+let storedHistory = JSON.parse(localStorage.getItem("historyValue")) || [];
+for (var i = 0; i < 15; i++) {
+  if (storedHistory[i]) {
+    // console.log("check localStor", typeof storedHistory[i]);
+    //prevent empty boxes from being generated
+    $("<button>")
+      .attr("class", "histBtn col-md-10 col-ms-10")
+      .attr("data-city", storedHistory[i])
+      .text(storedHistory[i])
+      .appendTo($historyEl);
+    // console.log("ln33, button data", storedHistory[i]);
+  }
+}
+
 //listen to location search box and button
 let locationSearch = function (event) {
   event.preventDefault();
@@ -29,6 +44,8 @@ let locationSearch = function (event) {
     getLatLon(location); // call getLatLon fn and pass the location value over
     // $todayWeatherEl.textContent = "";
     // $fiveDaysEl.textContent = "";
+    // Sets user input into local storage history after search
+
     $locSearchForm.val("");
     console.log(location); //city input
   } else {
@@ -48,14 +65,67 @@ let getLatLon = function (location) {
         let lon = cityData["city"]["coord"]["lon"]; // ↑
         let cityName = cityData.city.name;
         getTodayWeather(lat, lon, cityName);
-        getFiveDayForcast(lat, lon);
+        getFiveDayForecast(lat, lon);
         console.log("lon= ", lon);
         console.log("lat= ", lat);
         $fiveDaysEl.text("");
         $todayWeatherEl.text("");
+
+        // Sets user input into local storage history after search
+        let historyValue = cityName;
+        storedHistory.unshift(historyValue);
+        console.log("historyValue", historyValue);
+
+        // set History from local storage
+        localStorage.setItem(
+          "historyValue",
+          JSON.stringify(storedHistory.slice(0, 15)) // Limits to 10 values in search history
+        );
+        $("<button>")
+          .attr("class", "histBtn col-md-10 col-ms-10")
+          .text(historyValue)
+          .prependTo($historyEl);
+        //
       });
     } else {
       alert("City is not found.");
+    }
+  });
+};
+
+let histGetLL = function (city) {
+  console.log("ln97 histGetLL city=", city);
+  let cityURL =
+    "https://api.openweathermap.org/data/2.5/forecast?q=" + city + apiKey;
+  fetch(cityURL).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (cityData) {
+        console.log(cityData);
+        let lat = cityData.city.coord.lat; // two diff ways to get an otem out of the object
+        let lon = cityData["city"]["coord"]["lon"]; // ↑
+        let cityName = cityData.city.name;
+        getTodayWeather(lat, lon, cityName);
+        getFiveDayForecast(lat, lon);
+        console.log("lon= ", lon);
+        console.log("lat= ", lat);
+        $fiveDaysEl.text("");
+        $todayWeatherEl.text("");
+
+        // Sets user input into local storage history after search
+        let historyValue = cityName;
+        storedHistory.unshift(historyValue);
+        console.log("historyValue", historyValue);
+
+        // set History from local storage
+        localStorage.setItem(
+          "historyValue",
+          JSON.stringify(storedHistory.slice(0, 15)) // Limits to 10 values in search history
+        );
+        $("<button>")
+          .attr("class", "histBtn col-md-10 col-ms-10")
+          .text(historyValue)
+          .prependTo($historyEl);
+      });
     }
   });
 };
@@ -107,7 +177,7 @@ let getTodayWeather = function (lat, lon, cityName) {
 };
 
 // for 5 days
-let getFiveDayForcast = function (lat, lon) {
+let getFiveDayForecast = function (lat, lon) {
   let llURL =
     "https://api.openweathermap.org/data/2.5/forecast?lat=" +
     lat +
@@ -179,44 +249,16 @@ let getFiveDayForcast = function (lat, lon) {
     }
   });
 };
-//       } else {
-//         alert("Error: " + response.statusText);
-//       }
-//     })
-//     .catch(function (error) {
-//       alert("Unable to connect to weather provider");
-//     });
-// };
 
-// let displayWeather = function (result, searchTerm) {
-//   if (result.length === 0) {
-//     $fiveDaysEl.textContent = "No weather data found.";
-//     $todayWeatherEl.textContent = "No weather data found.";
-//     return;
-//   }
-//   $locationSearchTerm.textContent = searchTerm;
+let histSearch = function (event) {
+  var city = $(event.target).attr("data-city");
+  console.log("ln255", city);
+  if (city) {
+    histGetLL(city);
+    // $fiveDaysEl.text("");
+    // $todayWeatherEl.text("");
+  }
+};
 
-//   let todayResult = $("<div>").attr("id", "todayResult");
-//   let fiveDaysResult = $("<div>").attr("id", "fiveDaysResult");
-
-//   $locationSearchTerm.textContent = searchTerm;
-
-//   $todayWeatherEl.append(todayResult);
-//   $fiveDaysEl.append(fiveDaysResult);
-// };
-
+$(".histBtn").click(histSearch);
 $searchBtn.click(locationSearch);
-
-//getFiveDayForcast
-//api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
-//list.weather.icon Weather icon id
-
-// V GIVEN a weather dashboard with form inputs
-// WHEN I search for a city
-// THEN I am presented with current and future conditions for that city and that city is added to the search history
-// WHEN I view current weather conditions for that city
-// THEN I am presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, and the the wind speed
-// WHEN I view future weather conditions for that city
-// THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
-// WHEN I click on a city in the search history
-// THEN I am again presented with current and future conditions for that city

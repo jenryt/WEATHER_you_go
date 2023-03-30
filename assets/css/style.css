@@ -22,6 +22,7 @@ header {
 
 header > div {
   font-size: large;
+  height: 20%;
 }
 
 .main {
@@ -32,18 +33,8 @@ header > div {
   max-width: 100%;
 }
 
-#serchAndHist {
-  border-right: 1px white solid;
-}
-
-#locationSearch {
-  font-size: 17px;
-  float: left;
-  background: #f1f1f1;
-}
-
 /* Style the submit button */
-button {
+#searchButton {
   position: absolute;
   margin-top: 4%;
   margin-left: 0%;
@@ -56,13 +47,20 @@ button {
   border-left: none;
 }
 
-#searchForm {
+#searchAndHist {
   position: relative;
+}
+
+#searchForm {
+  position: absolute;
   height: 17%;
   width: 100%;
 }
 
 #locationSearch {
+  font-size: 17px;
+  float: left;
+  background: #f1f1f1;
   width: 78%;
   height: 36px;
   margin: 6% 1%;
@@ -75,20 +73,38 @@ button {
   width: 100%;
   height: 80%;
   margin-left: 1%;
+  position: relative;
+  top: 20%;
 }
 
-hr.rounded {
-  border-top: 1px solid white;
-  opacity: 100%;
-  margin: 3% 0%;
+#history {
+  overflow-y: scroll;
+  max-height: 80%;
+  width: 95%;
 }
 
-.todayForcastBox {
+.histBtn {
+  background: transparent;
+  color: #68707f;
+  font-size: medium;
+  border: solid;
+  border-radius: 5px;
+  margin: 2% auto;
+  width: 87%;
+  height: 10%;
+}
+
+.todayWeatherBox {
   width: 100%;
   height: 30%;
 }
 
-.fiveDaysForcastBox {
+#todayWeather > img {
+  width: 6rem;
+  height: 6rem;
+}
+
+.fiveDaysForecastBox {
   width: 100%;
   height: 70%;
 }
@@ -98,4 +114,8 @@ hr.rounded {
   border: 1px solid white;
   border-radius: 7px;
   margin: 1%;
+}
+
+.row {
+  margin: 0%;
 }
