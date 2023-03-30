@@ -17,5 +17,7 @@ The following link is to the website for WEATHER you go.
 https://jenryt.github.io/WeatherDashboard/
 
 The following images are some snapshots of the site.
-assets/images/Screenshot 2023-03-30 at 12.28.25.png
-assets/images/Screen Recording 2023-03-30 at 12.31.22.mov
+<img width="1436" alt="Screenshot 2023-03-30 at 12 28 25" src="https://user-images.githubusercontent.com/116051329/228950989-f4eb8241-1211-416b-ae14-a9d55b2d3aa5.png">
+
+https://user-images.githubusercontent.com/116051329/228951017-cf932c3e-a314-4406-9295-e86686acc234.mov
+
