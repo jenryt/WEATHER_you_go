@@ -1,8 +1,7 @@
 const $locationEl = $("#locationSearch");
-const $locSeachForm = $("#searchForm");
-const $todayForcastEl = $("#todayForcast");
+const $locSearchForm = $("#locationSearch");
+const $todayWeatherEl = $("#todayWeather");
 const $fiveDaysEl = $("#fiveDaysForcast");
-const $locationSearchTerm = $("#locationSearchTerm");
 const $searchBtn = $("#searchButton");
 const apiKey = "&appid=8c04b0cdc02355438550cff0dc38d66f";
 
@@ -28,8 +27,9 @@ let locationSearch = function (event) {
 
   if (location) {
     getLatLon(location); // call getLatLon fn and pass the location value over
-    // $todayForcastEl.textContent = "";
+    // $todayWeatherEl.textContent = "";
     // $fiveDaysEl.textContent = "";
+    $locSearchForm.val("");
     console.log(location); //city input
   } else {
     alert("Please enter a city name");
@@ -46,17 +46,68 @@ let getLatLon = function (location) {
         console.log(cityData);
         let lat = cityData.city.coord.lat; // two diff ways to get an otem out of the object
         let lon = cityData["city"]["coord"]["lon"]; // ↑
-        getForcast(lat, lon);
+        let cityName = cityData.city.name;
+        getTodayWeather(lat, lon, cityName);
+        getFiveDayForcast(lat, lon);
         console.log("lon= ", lon);
         console.log("lat= ", lat);
+        $fiveDaysEl.text("");
+        $todayWeatherEl.text("");
       });
     } else {
       alert("City is not found.");
     }
   });
 };
+
+// fordaily weather
+let getTodayWeather = function (lat, lon, cityName) {
+  let dURL =
+    "https://api.openweathermap.org/data/2.5/weather?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&units=imperial" +
+    apiKey;
+  fetch(dURL).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (dData) {
+        console.log("dData", dData);
+        console.log("cityName", cityName);
+        let $cityNameEl = $(".cityName").text(cityName);
+        let dailyCard = $("<div>").attr("class", "dailyCard col-md-8 col-sm-8");
+
+        let dailyIcon = $("<img>", {
+          src:
+            " https://openweathermap.org/img/wn/" +
+            dData.weather[0].icon +
+            "@2x.png",
+        }).attr("class", "col-md-3");
+
+        let dailyMxTemp = $("<div>").text(
+          "Temperature : " + dData.main.temp_max + " °F"
+        );
+
+        let dailyMnTemp = $("<div>").text(
+          "Temperature : " + dData.main.temp_min + " °F"
+        );
+
+        let dailyWind = $("<div>").text("Wind : " + dData.wind.speed + " MPH");
+
+        let dailyHumi = $("<div>").text(
+          "Humidity : " + dData.main.humidity + " %"
+        );
+
+        $todayWeatherEl.append(dailyIcon);
+        $todayWeatherEl.append(dailyCard);
+        dailyCard.append(dailyMxTemp, dailyMnTemp, dailyWind, dailyHumi);
+      });
+    }
+  });
+};
+
 // for 5 days
-let getForcast = function (lat, lon) {
+let getFiveDayForcast = function (lat, lon) {
   let llURL =
     "https://api.openweathermap.org/data/2.5/forecast?lat=" +
     lat +
@@ -67,10 +118,10 @@ let getForcast = function (lat, lon) {
   fetch(llURL).then(function (response) {
     if (response.ok) {
       response.json().then(function (llData) {
-        console.log(llData);
+        // console.log("llData", llData);
         // console.log(lon);
         let weatherDataArr = llData.list;
-        console.log(weatherDataArr);
+        // console.log("5 days array", weatherDataArr);
         $.each(weatherDataArr, function (index, element) {
           let dt = element.dt_txt;
           let dtDate = dt.slice(0, 10);
@@ -82,21 +133,33 @@ let getForcast = function (lat, lon) {
             // console.log(index);
             let repData = index % 8 == 7;
             if (repData) {
-              console.log(weatherDataArr[index]);
-              console.log(weatherDataArr[index].dt_txt.slice(0, 10));
-              console.log(weatherDataArr[index].weather[0].icon);
+              // console.log(weatherDataArr[index]);
+              // console.log(weatherDataArr[index].dt_txt.slice(0, 10));
+              // console.log(weatherDataArr[index].weather[0].icon);
+
+              let FDFcard = $("<div>").attr(
+                "class",
+                "FDFcard col-md-2 col-sm-10"
+              );
+
               let repDate = $("<div>").text(
-                dayjs(weatherDataArr[index].dt_txt.slice(0, 10)).format(
-                  "dddd, MMMM DD, YYYY"
+                dayjs(weatherDataArr[index].dt_txt.slice(0, 10)).format("dddd")
+              );
+              repDate.append(
+                $("<div>").text(
+                  dayjs(weatherDataArr[index].dt_txt.slice(0, 10)).format(
+                    "MMMM DD, YYYY"
+                  )
                 )
               );
+
               let repIcon = $("<img>", {
                 src:
                   " https://openweathermap.org/img/wn/" +
                   weatherDataArr[index].weather[0].icon +
                   "@2x.png",
               });
-              console.log("repIcon", repIcon);
+              // console.log("repIcon", repIcon);
 
               let repTemp = $("<div>").text(
                 "Temperature : " + weatherDataArr[index].main.temp + " °F"
@@ -107,15 +170,14 @@ let getForcast = function (lat, lon) {
               let repHumi = $("<div>").text(
                 "Humidity : " + weatherDataArr[index].main.humidity + " %"
               );
-              $fiveDaysEl.append(repDate, repIcon, repTemp, repWind, repHumi);
+              $fiveDaysEl.append(FDFcard);
+              FDFcard.append(repDate, repIcon, repTemp, repWind, repHumi);
             }
           }
         });
       });
     }
   });
-
-  // displayWeather(data, location);
 };
 //       } else {
 //         alert("Error: " + response.statusText);
@@ -126,29 +188,28 @@ let getForcast = function (lat, lon) {
 //     });
 // };
 
-let displayWeather = function (result, searchTerm) {
-  if (result.length === 0) {
-    $fiveDaysEl.textContent = "No weather data found.";
-    $todayForcastEl.textContent = "No weather data found.";
-    return;
-  }
-  $locationSearchTerm.textContent = searchTerm;
+// let displayWeather = function (result, searchTerm) {
+//   if (result.length === 0) {
+//     $fiveDaysEl.textContent = "No weather data found.";
+//     $todayWeatherEl.textContent = "No weather data found.";
+//     return;
+//   }
+//   $locationSearchTerm.textContent = searchTerm;
 
-  let todayResult = $("<div>").attr("id", "todayResult");
-  let fiveDaysResult = $("<div>").attr("id", "fiveDaysResult");
+//   let todayResult = $("<div>").attr("id", "todayResult");
+//   let fiveDaysResult = $("<div>").attr("id", "fiveDaysResult");
 
-  $locationSearchTerm.textContent = searchTerm;
+//   $locationSearchTerm.textContent = searchTerm;
 
-  $todayForcastEl.append(todayResult);
-  $fiveDaysEl.append(fiveDaysResult);
-};
+//   $todayWeatherEl.append(todayResult);
+//   $fiveDaysEl.append(fiveDaysResult);
+// };
 
 $searchBtn.click(locationSearch);
 
-//getForcast
+//getFiveDayForcast
 //api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
 //list.weather.icon Weather icon id
-// daily: https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid={API key}
 
 // V GIVEN a weather dashboard with form inputs
 // WHEN I search for a city
