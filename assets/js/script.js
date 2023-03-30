@@ -42,9 +42,6 @@ let locationSearch = function (event) {
 
   if (location) {
     getLatLon(location); // call getLatLon fn and pass the location value over
-    // $todayWeatherEl.textContent = "";
-    // $fiveDaysEl.textContent = "";
-    // Sets user input into local storage history after search
 
     $locSearchForm.val("");
     console.log(location); //city input
@@ -60,10 +57,10 @@ let getLatLon = function (location) {
   fetch(cityURL).then(function (response) {
     if (response.ok) {
       response.json().then(function (cityData) {
-        console.log(cityData);
         let lat = cityData.city.coord.lat; // two diff ways to get an otem out of the object
         let lon = cityData["city"]["coord"]["lon"]; // ↑
         let cityName = cityData.city.name;
+        console.log("ln63 cityData.city.name", cityData.city.name);
         getTodayWeather(lat, lon, cityName);
         getFiveDayForecast(lat, lon);
         console.log("lon= ", lon);
@@ -83,6 +80,7 @@ let getLatLon = function (location) {
         );
         $("<button>")
           .attr("class", "histBtn col-md-10 col-ms-10")
+          .attr("data-city", cityData.city.name)
           .text(historyValue)
           .prependTo($historyEl);
         //
@@ -123,6 +121,7 @@ let histGetLL = function (city) {
         );
         $("<button>")
           .attr("class", "histBtn col-md-10 col-ms-10")
+          .attr("data-city", cityData.city.name)
           .text(historyValue)
           .prependTo($historyEl);
       });
@@ -262,3 +261,7 @@ let histSearch = function (event) {
 
 $(".histBtn").click(histSearch);
 $searchBtn.click(locationSearch);
+$(".clearHistBtn").on("click", () => {
+  localStorage.clear();
+  $historyEl.empty();
+});

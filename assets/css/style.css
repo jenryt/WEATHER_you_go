@@ -119,3 +119,26 @@ header > div {
 .row {
   margin: 0%;
 }
+
+.clearHist {
+  position: relative;
+  background-color: transparent;
+  border-radius: 50%;
+  width: 17%;
+  height: 0;
+  padding-top: 100%;
+  margin-top: 9%;
+  left: 41.5%;
+}
+
+.clearHistBtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 17%;
+  object-fit: cover;
+  border-radius: 50%;
+}
