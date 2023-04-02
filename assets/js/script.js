@@ -38,7 +38,7 @@ for (var i = 0; i < storedHistory.length; i++) {
       .attr("class", "histBtn col-md-10 col-ms-10")
       .attr("data-city", storedHistory[i])
       .text(storedHistory[i])
-      .prependTo($historyEl)
+      .appendTo($historyEl)
       .on("click", histSearch);
   }
   // console.log("ln33, button data", storedHistory[i]);
